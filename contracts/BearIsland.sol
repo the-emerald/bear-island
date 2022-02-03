@@ -11,13 +11,25 @@ contract BearIsland is ERC721, ERC721Enumerable, Ownable {
 
     Counters.Counter private _tokenIdCounter;
 
-    // solhint-disable-next-line no-empty-blocks
-    constructor() ERC721("Bear Island", "BEAR") {}
+    string public baseURI;
 
-    function _baseURI() internal pure override returns (string memory) {
-        return "https://replace-me.com/";
+    constructor(string memory baseURI_) ERC721("Bear Island", "BEAR") {
+        baseURI = baseURI_;
     }
 
+    /// Return the base URI for a token.
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
+    }
+
+    /// Update the base URI for tokens.
+    /// @param baseURI_ the new base URI
+    function setURI(string memory baseURI_) external onlyOwner {
+        baseURI = baseURI_;
+    }
+
+    /// Mint a token.
+    /// @param to address to mint the token to
     function safeMint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
