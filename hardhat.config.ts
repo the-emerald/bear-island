@@ -23,20 +23,45 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // Go to https://hardhat.org/config/ to learn more
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.4",
-  networks: {
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
+  solidity: {
+    version: "0.8.6",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 1000
+      }
+    }
   },
+
   gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
-    currency: "USD",
+    currency: 'USD',
+    excludeContracts: ["DummyWETH.sol"],
+    showMethodSig: true,
   },
+
+  networks: {
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      accounts: {
+        mnemonic: process.env.MNEMONIC !== undefined ? process.env.MNEMONIC : ""
+      }
+    },
+
+    mainnet: {
+      url: "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      accounts: {
+        mnemonic: process.env.MNEMONIC !== undefined ? process.env.MNEMONIC : ""
+      }
+    }
+  },
+
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: process.env.ETHERSCAN !== undefined ? process.env.ETHERSCAN : ""
+  },
+
+  typechain: {
+    outDir: 'typechain',
+    target: 'ethers-v5',
   },
 };
 

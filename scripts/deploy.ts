@@ -10,6 +10,7 @@ function delay(ms: number) {
 }
 
 const BASE_URI = "https://replace-me.com/";
+const ADMIN_ADDRESS = "0xaaBDE1A4B4Ac0fa9efB0E4845978E70baBC37E5B";
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -24,18 +25,22 @@ async function main() {
   const bearIsland = await BearIsland.deploy(BASE_URI);
 
   await bearIsland.deployed();
-
   console.log("BearIsland deployed to:", bearIsland.address);
-  console.log("Waiting 75 seconds... do not exit the script.");
 
-  // 75s = 5 blocks
-  await delay(75000);
+  await delay(15000);
+  await bearIsland.transferOwnership(ADMIN_ADDRESS);
+  console.log("BearIsland admin transferred to: ", ADMIN_ADDRESS);
+
+  console.log("Waiting 30 seconds... do not exit the script.");
+
+  // 30s = 2 blocks
+  await delay(30000);
 
   await run("verify:verify", {
     address: bearIsland.address,
     constructorArguments: [BASE_URI]
   });
-
+  console.log("Verified BearIsland on Etherscan.");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
